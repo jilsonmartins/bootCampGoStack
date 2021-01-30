@@ -1,34 +1,45 @@
 const express = require('express');
+const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 
 app.use(express.json());
 
+const projects = [];
+
 app.get('/projects', (request, response) => {
-    const { title, owner } = request.query;
+    //const { title, owner } = request.query;
 
-    console.log(title);
-    console.log(owner);
+    //console.log(title);
+    //console.log(owner);
 
-    return response.json({ message: 'Hello World' });
+    return response.json(projects);
 });
 
 app.post('/projects', (request, response) => {
     const { title, owner} = request.body;
 
-    console.log(title);
-    console.log(owner);
+    const project = { id: uuidv4(), title, owner };
 
-    return response.json([
-        'Projeto 1',
-        'Projeto 2',
-    ]);
+    projects.push(project);
+
+    return response.json(project);
 });
 
 app.put('/projects/:id', (request, response) => {
     const { id } = request.params;
 
-    console.log(id);
+    const projectIndex = projects.findIndex(project => project.id === id);
+
+    if(projectIndex < 0) {
+        return response.status(400).json({ error: 'Project not found.'})
+    }
+
+    const project = {
+        title,
+        owner,
+        id,
+    };
 
     return response.json([
         'Projeto 3',
